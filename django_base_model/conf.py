@@ -9,8 +9,8 @@ class Settings(object):
     """
 
     @property
-    def DEFAULT_BASE_MODEL(self):
-        return getattr(settings, 'DEFAULT_BASE_MODEL', models.BaseModel)
+    def BASE_MODEL_DEFAULT(self):
+        return getattr(settings, 'BASE_MODEL_DEFAULT', models.BaseModel)
 
 
 conf = Settings()

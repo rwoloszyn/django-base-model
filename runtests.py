@@ -6,11 +6,12 @@ import os
 import sys
 
 import pytest
+import django
 
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.settings')
-    import django
+
     django.setup()
     return pytest.main()
 

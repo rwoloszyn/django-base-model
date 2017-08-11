@@ -1,33 +1,36 @@
 from django.apps import AppConfig
 from django.apps import apps
 # https://stackoverflow.com/questions/6791911/execute-code-when-django-starts-once-only
-from django_base_model.conf import conf
+from django.core.exceptions import ImproperlyConfigured
 
 
 class BaseModelAppConfig(AppConfig):
-    name = 'django-base-model'
+    name = 'django_base_model'
     verbose_name = "Django base model"
 
     def ready(self):
-        _validate_model_inheritance()
+        pass
+        # _validate_model_inheritance()
 
 
 def _validate_model_inheritance():
-    app = apps.get_app('my_application_name')
+    # app = apps.get_app('my_application_name')
 
-    for model in apps.get_models(include_auto_created=True):
+    for model in apps.get_models():
         new_object = model()
-        print(new_object)
+        if new_object._meta.abstract is False:
+            raise ImproperlyConfigured("BASE_MODEL_DEFAULT should be an abstract class")
         #
         # places = Place.objects.all()
         # not_restaurants = [p for p in places if not hasattr(p, 'restaurant')]
 
 
-def _validate_custom_base_model():
-    #checks whatever custom base model declared in settings is
-    #abstract, so model instances are not created in db
+def _validate_base_model():
+    # checks whatever custom base model declared in settings is
+    # abstract, so model instances are not created in db
+    from django_base_model.conf import conf
 
-    default_model = conf.DEFAULT_BASE_MODEL
+    default_model = conf.BASE_MODEL_DEFAULT
 
-    if not default_model._meta.abstract:
-        raise Exception("DEFAULT_BASE_MODEL should be abstract class")
+    if default_model._meta.abstract is False:
+        raise ImproperlyConfigured("BASE_MODEL_DEFAULT should be an abstract class")
